@@ -52,9 +52,44 @@ $(function() {
 			center: [-73.983652, 40.755024], 
 			zoom: 12
 		});
-
 		geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken });
 		var control = map.addControl(geocoder);
+		function handleFileSelect(evt) {
+			var file = evt.target.files[0]; // Read first selected file
+ 
+			var reader = new FileReader();
+ 
+			reader.onload = function (theFile) {
+				// Parse as (geo)JSON
+				var geoJSONcontent = JSON.parse(theFile.target.result);
+				draw.add(geoJSONcontent);
+ /*
+				// Add as source to the map
+				map.addSource('uploaded-source', {
+					'type': 'geojson',
+					'data': geoJSONcontent
+				});
+ 
+				map.addLayer({
+					'id': 'uploaded-polygons',
+					'type': 'fill',
+					'source': 'uploaded-source',
+					'paint': {
+						'fill-color': '#888888',
+						'fill-outline-color': 'red',
+						'fill-opacity': 0.4
+					},
+					// filter for (multi)polygons; for also displaying linestrings
+					// or points add more layers with different filters
+					'filter': ['==', '$type', 'Polygon']
+				});
+*/
+			};
+ 
+			// Read the GeoJSON as text
+			reader.readAsText(file, 'UTF-8');
+		}
+		document.getElementById('file').addEventListener('change', handleFileSelect, false);
 	}
 
 	function initializeMaterialize() {
@@ -126,8 +161,7 @@ $(function() {
 		draw = new MapboxDraw({
 			modes: modes
 		});
-		map.addControl(draw);
-
+	    map.addControl(draw);
 		map.on('draw.create', function (e) {
 			M.Toast.dismissAll();
 		});
@@ -145,6 +179,8 @@ $(function() {
 
 		M.Toast.dismissAll();
 		M.toast({html: 'Click two points on the map to make a rectangle.', displayLength: 7000})
+		//draw.changeMode('simple_select');
+		//draw.add(shape);
 	}
 
 	function initializeGridPreview() {
@@ -235,7 +271,8 @@ $(function() {
 
 		var polygon = getPolygonByBounds(tileRect);
 
-		var areaPolygon = draw.getAll().features[0];
+		// var areaPolygon = draw.getAll().features[0];
+		var areaPolygon = draw.getSelected().features[0];
 
 		if(turf.booleanDisjoint(polygon, areaPolygon) == false) {
 			return true;
@@ -246,7 +283,8 @@ $(function() {
 
 	function getBounds() {
 
-		var coordinates = draw.getAll().features[0].geometry.coordinates[0];
+		// var coordinates = draw.getAll().features[0].geometry.coordinates[0];
+		var coordinates = draw.getSelected().features[0].geometry.coordinates[0];
 
 		var bounds = coordinates.reduce(function(bounds, coord) {
 			return bounds.extend(coord);
@@ -425,7 +463,8 @@ $(function() {
 
 	async function startDownloading() {
 
-		if(draw.getAll().features.length == 0) {
+		// if(draw.getAll().features.length == 0) {
+		if(draw.getSelected().features.length == 0) {
 			M.toast({html: 'You need to select a region first.', displayLength: 3000})
 			return;
 		}

@@ -31,6 +31,14 @@
 </head>
 <body>
 
+	<style>
+		#file {
+			position: absolute;
+			top: 0;
+			left: 0;
+		}
+	</style>
+
 	<div id='max-height'>
 		
 		<div id='map-view'></div>
@@ -38,6 +46,13 @@
 		<div id='main-title'>Map Tiles Downloader</div>
 
 	</div>
+
+	<input
+		type="file"
+		id="file"
+		name="file"
+		accept="application/geo+json,application/vnd.geo+json,.geojson"
+	/>
 
 	<div class='sidebar' id='main-sidebar'>
 
