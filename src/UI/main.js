@@ -49,8 +49,8 @@ $(function() {
 		map = new mapboxgl.Map({
 			container: 'map-view',
 			style: 'mapbox://styles/aliashraf/ck6lw9nr80lvo1ipj8zovttdx',
-			center: [-73.983652, 40.755024], 
-			zoom: 12
+			center: [33, 44], 
+			zoom: 7
 		});
 		geocoder = new MapboxGeocoder({ accessToken: mapboxgl.accessToken });
 		var control = map.addControl(geocoder);
@@ -271,8 +271,8 @@ $(function() {
 
 		var polygon = getPolygonByBounds(tileRect);
 
-		// var areaPolygon = draw.getAll().features[0];
-		var areaPolygon = draw.getSelected().features[0];
+		var areaPolygon = draw.getAll().features[0];
+		// var areaPolygon = draw.getSelected().features[0];
 
 		if(turf.booleanDisjoint(polygon, areaPolygon) == false) {
 			return true;
@@ -283,8 +283,8 @@ $(function() {
 
 	function getBounds() {
 
-		// var coordinates = draw.getAll().features[0].geometry.coordinates[0];
-		var coordinates = draw.getSelected().features[0].geometry.coordinates[0];
+		var coordinates = draw.getAll().features[0].geometry.coordinates[0];
+		//var coordinates = draw.getSelected().features[0].geometry.coordinates[0];
 
 		var bounds = coordinates.reduce(function(bounds, coord) {
 			return bounds.extend(coord);
@@ -463,8 +463,8 @@ $(function() {
 
 	async function startDownloading() {
 
-		// if(draw.getAll().features.length == 0) {
-		if(draw.getSelected().features.length == 0) {
+		if(draw.getAll().features.length == 0) {
+		// if(draw.getSelected().features.length == 0) {
 			M.toast({html: 'You need to select a region first.', displayLength: 3000})
 			return;
 		}
